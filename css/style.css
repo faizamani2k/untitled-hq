@@ -509,3 +509,24 @@ main:focus, main:focus-visible { outline: none; }
 .lt-card figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 6px; font-size: 14px; font-weight: 600; }
 .lt-dl { font: 600 13px var(--text); background: none; border: 1.5px solid var(--ink); padding: 4px 10px; cursor: pointer; white-space: nowrap; }
 .lt-dl:hover { background: var(--ink); color: var(--bone); }
+
+/* ---------- style: ask AI ---------- */
+.ai-form { display: flex; flex-direction: column; gap: 6px; max-width: 760px; margin-top: 16px; }
+.ai-form label { font-weight: 600; font-size: 14px; }
+.ai-form textarea { font: 16px/1.4 var(--text); padding: 10px; border: 2px solid var(--ink); background: #f3f1ec; color: var(--ink); }
+.ai-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 20px; margin-top: 6px; }
+.ai-row label { display: flex; flex-direction: column; gap: 4px; }
+.ai-msg { margin: 4px 0 0; font-size: 14px; color: var(--char); min-height: 1.4em; }
+.ai-out, .ai-saved { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+@media (min-width: 860px) { .ai-out, .ai-saved { grid-template-columns: repeat(4, 1fr); } }
+.ai-card { margin: 0; }
+.ai-shot { aspect-ratio: 4 / 5; background: var(--concrete-2); display: grid; place-items: center; overflow: hidden; border: 1.5px solid var(--ink); }
+.ai-shot img { width: 100%; height: 100%; object-fit: cover; }
+.ai-shot span { font-size: 13px; color: var(--char); padding: 10px; text-align: center; }
+.ai-card.waiting .ai-shot { background: repeating-linear-gradient(-45deg, var(--concrete-2) 0 8px, var(--concrete) 8px 16px); }
+.ai-card figcaption { display: flex; gap: 6px; margin-top: 6px; }
+.ai-card figcaption button { font: 600 13px var(--text); background: none; border: 1.5px solid var(--ink); padding: 4px 10px; cursor: pointer; }
+.ai-card figcaption button:disabled { opacity: .4; cursor: default; }
+.ai-h3 { margin: 32px 0 0; font: 800 26px/1 var(--display); text-transform: uppercase; }
+.ai-tile { padding: 0; border: 0; background: var(--concrete-2); aspect-ratio: 4 / 5; overflow: hidden; cursor: zoom-in; }
+.ai-tile img { width: 100%; height: 100%; object-fit: cover; }

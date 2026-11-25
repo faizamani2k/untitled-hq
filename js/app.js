@@ -149,6 +149,7 @@
     if (e.key === "ArrowLeft") lbShow(lbAt - 1);
     if (e.key === "ArrowRight") lbShow(lbAt + 1);
   });
+  window.__wireZoom = function (r) { wireZoom(r); };
   function wireZoom(root) {
     var btns = root.querySelectorAll("[data-zoom]");
     var list = Array.prototype.map.call(btns, function (b) { var im = b.querySelector("img"); return { src: im.getAttribute("src"), alt: im.getAttribute("alt") }; });
@@ -472,9 +473,23 @@
           '<label class="lt-label" for="lt-word">Word</label><input id="lt-word" class="lt-input" maxlength="24" value="' + esc(S.workingName === "Untitled" ? "Mortain" : S.workingName) + '" autocomplete="off">' +
           '<div class="lt-grid" id="lt-grid"></div>' +
         '</section>' +
+        '<section class="sec" id="askai"><h2 class="h2">Ask AI</h2>' +
+          '<p class="muted" style="margin-top:-6px">Describe a lettering, a graphic, a blank garment or a look. The brand style is added for you. Free, about one image every 15 seconds.</p>' +
+          '<form id="ai-form" class="ai-form">' +
+            '<label for="ai-prompt">What do you want?</label>' +
+            '<textarea id="ai-prompt" rows="3" placeholder="e.g. blank sun-faded washed black boxy tee, frayed collar"></textarea>' +
+            '<div class="ai-row"><label>Type <select id="ai-kind" class="sel"><option value="lettering">Lettering</option><option value="graphic">Shirt graphic</option><option value="garment" selected>Blank garment</option><option value="look">Model look</option><option value="free">Anything</option></select></label>' +
+            '<label>How many <select id="ai-n" class="sel"><option>1</option><option>2</option><option selected>4</option><option>6</option><option>10</option></select></label>' +
+            '<button class="btn" id="ai-go">Make images</button></div>' +
+            '<p class="ai-msg" id="ai-msg" role="status"></p>' +
+          '</form>' +
+          '<div class="ai-out" id="ai-out"></div>' +
+          '<h3 class="ai-h3">Saved by the team</h3><div class="ai-saved" id="ai-saved"></div>' +
+        '</section>' +
         '<section class="sec"><h2 class="h2">Details to use</h2><ul class="ruled">' + S.details.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></section>' +
       '</div>';
     if (window.Lettering) window.Lettering.mount(app.querySelector("#lettering"));
+    if (window.AskAI) window.AskAI.mount(app.querySelector("#askai"));
     app.querySelectorAll(".swatch").forEach(function (b) {
       b.addEventListener("click", function () {
         var hex = b.dataset.hex, span = b.querySelector("span:last-child");
