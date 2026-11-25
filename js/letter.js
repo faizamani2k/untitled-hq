@@ -97,6 +97,13 @@
         '<circle cx="400" cy="400" r="290" fill="none" stroke="' + C.ink + '" stroke-width="6"/><circle cx="400" cy="400" r="200" fill="none" stroke="' + C.ink + '" stroke-width="3"/>' +
         '<text font-family="Archivo" font-weight="700" font-size="46" fill="' + C.ink + '" letter-spacing="8"><textPath href="#cr" startOffset="0">' + esc(u) + ' \u2022 ' + esc(u) + ' \u2022 ' + '</textPath></text>' +
         txt(w.charAt(0).toUpperCase(), { font: "pirata", y: 470, size: 220, fill: C.ink }); } },
+    { name: "Flourish across chest", fonts: ["doulaise"], draw: function (w) {
+      var L = fit(w, 760, 120);
+      return '<defs><linearGradient id="fc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3836"/><stop offset=".55" stop-color="#1c1c1c"/><stop offset="1" stop-color="#0f0f0f"/></linearGradient></defs><rect width="800" height="800" fill="url(#fc)"/>' +
+        '<path d="M30 430 C 160 330, 300 470, 400 405 S 650 330, 775 420" fill="none" stroke="' + C.bone + '" stroke-width="3.5" stroke-linecap="round"/>' +
+        '<path d="M60 455 C 230 500, 560 500, 760 445" fill="none" stroke="' + C.bone + '" stroke-width="3" stroke-linecap="round"/>' +
+        '<path d="M330 300 C 360 360, 420 470, 470 520" fill="none" stroke="' + C.bone + '" stroke-width="2" stroke-linecap="round"/>' +
+        txt(w, { font: "doulaise", y: 452, size: 220, fill: "none", stroke: C.bone, sw: 4, len: L }) + txt(w, { font: "doulaise", y: 450, size: 220, fill: C.bone, len: L }); } },
     { name: "Monogram", fonts: ["maguntia", "archivo"], draw: function (w) { var u = w.toUpperCase();
       return bg(C.ink) + txt(w.charAt(0).toUpperCase(), { font: "maguntia", y: 520, size: 420, fill: C.bone }) + txt(u, { font: "archivo", y: 680, size: 34, fill: C.fade, ls: 16 }); } }
   ];

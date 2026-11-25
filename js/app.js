@@ -469,7 +469,7 @@
           '<div class="typerow"><div><h3>Cracked condensed</h3><p>Big back prints that crack as they wear.</p></div><p class="sample s-crack">Works 01</p></div>' +
         '</section>' +
         '<section class="sec" id="lettering"><h2 class="h2">Lettering maker</h2>' +
-          '<p class="muted" style="margin-top:-6px">Type a word to see it in 30 styles. Download any of them as a PNG.</p>' +
+          '<p class="muted" style="margin-top:-6px">Type a word to see it in 31 styles. Download any of them as a PNG.</p>' +
           '<label class="lt-label" for="lt-word">Word</label><input id="lt-word" class="lt-input" maxlength="24" value="' + esc(S.workingName === "Untitled" ? "Mortain" : S.workingName) + '" autocomplete="off">' +
           '<div class="lt-grid" id="lt-grid"></div>' +
         '</section>' +
