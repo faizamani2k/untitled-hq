@@ -65,15 +65,16 @@
     if (!window.SITE_STORAGE) return Promise.resolve();
     var ctl = window.AbortController ? new AbortController() : null;
     if (ctl) setTimeout(function () { ctl.abort(); }, 8000);
-    return fetch(window.SITE_STORAGE.url + "/rest/v1/plan_status?select=task_id,status,owner", { headers: restHeaders({}), signal: ctl ? ctl.signal : undefined })
+    return fetch(window.SITE_STORAGE.url + "/rest/v1/plan_status?select=task_id,status,owner,decision,agreed,decided_on,notes", { headers: restHeaders({}), signal: ctl ? ctl.signal : undefined })
       .then(function (r) { return r.ok ? r.json() : []; })
-      .then(function (rows) { rows.forEach(function (r) { LIVE[r.task_id] = { status: r.status, owner: r.owner }; }); })
+      .then(function (rows) { rows.forEach(function (r) { LIVE[r.task_id] = r; }); })
       .catch(function () {});
   }
   function saveLive(t, patch) {
     var row = { task_id: t.id, status: statusOf(t), owner: ownerOf(t) || "", updated_at: new Date().toISOString() };
     for (var k in patch) row[k] = patch[k];
-    LIVE[t.id] = { status: row.status, owner: row.owner };
+    var prev = LIVE[t.id] || {};
+    LIVE[t.id] = Object.assign({}, prev, row);
     if (!window.SITE_STORAGE) return Promise.reject(new Error("offline"));
     return fetch(window.SITE_STORAGE.url + "/rest/v1/plan_status?on_conflict=task_id", {
       method: "POST",
@@ -266,6 +267,11 @@
       if (filter === "none") return !o && !t.isBreak;
       return o === filter || o === "all";
     }
+    function recLine(t) {
+      var r = LIVE[t.id] || {};
+      if (r.decision) return '<button type="button" class="rec-link has" data-rec="' + t.id + '"><b>Decided:</b> ' + esc(r.decision.length > 90 ? r.decision.slice(0, 90) + "\u2026" : r.decision) + '</button>';
+      return statusOf(t) === "Done" ? '<button type="button" class="rec-link" data-rec="' + t.id + '">Write down what was decided</button>' : '';
+    }
     function stClass(s) { return "st-" + s.toLowerCase().replace(/\s+/g, ""); }
 
     var rows = S.phases.map(function (ph) {
@@ -295,7 +301,8 @@
           return '<tr class="' + cls.join(" ") + '" data-row="' + t.id + '">' +
             '<td class="c-num">' + (t.isBreak ? "—" : String(stepNo(t)).padStart(2, "0")) + '</td>' +
             '<td class="c-task"><span class="t-title">' + esc(t.t) + '</span>' + (isNow ? ' <span class="flag">Today</span>' : '') +
-              (t.note ? '<span class="t-note">' + esc(t.note) + '</span>' : '') + '</td>' +
+              (t.note ? '<span class="t-note">' + esc(t.note) + '</span>' : '') +
+              (t.isBreak ? '' : recLine(t)) + '</td>' +
             '<td class="c-date"><span class="lbl">Start</span>' + dm(d(t.s)) + '</td>' +
             '<td class="c-date"><span class="lbl">End</span>' + dm(d(t.e)) + '</td>' +
             '<td class="c-days"><span class="lbl">Days</span>' + days + '</td>' +
@@ -357,6 +364,7 @@
         sel.className = "sel stat " + stClass(v);
         var tr = app.querySelector('[data-row="' + t.id + '"]');
         STATUSES.forEach(function (s) { tr.classList.remove(stClass(s)); }); tr.classList.add(stClass(v));
+        if (v === "Done") openRec(t);
         saveLive(t, { status: v }).then(function () { flash("Saved: step " + stepNo(t) + " is " + v.toLowerCase()); }, function () { flash("Couldn’t save. Check your connection and try again.", true); });
         document.getElementById("summary").innerHTML = summaryHtml();
         var ph = S.phases.filter(function (p) { return p.name === t.phase; })[0];
@@ -365,6 +373,33 @@
         if (el) el.textContent = real.filter(function (x) { return statusOf(x) === "Done"; }).length + " of " + real.length + " done";
       });
     });
+    function openRec(t) {
+      var r = LIVE[t.id] || {};
+      var dlg = document.getElementById("rec");
+      var agreed = (r.agreed || "").split(",").filter(Boolean);
+      dlg.querySelector(".rec-step").textContent = "Step " + String(stepNo(t)).padStart(2, "0") + " \u00b7 " + t.phase;
+      dlg.querySelector(".rec-title").textContent = t.t;
+      dlg.querySelector("#rec-decision").value = r.decision || "";
+      dlg.querySelector("#rec-notes").value = r.notes || "";
+      dlg.querySelector("#rec-date").value = r.decided_on || new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      dlg.querySelectorAll("input[name=agreed]").forEach(function (c) { c.checked = agreed.indexOf(c.value) >= 0; });
+      dlg.querySelector(".rec-msg").textContent = "";
+      dlg.dataset.id = t.id;
+      dlg.showModal();
+      dlg.querySelector("#rec-decision").focus();
+    }
+    var dlg = document.getElementById("rec");
+    dlg.onsubmit = function (ev) {
+      ev.preventDefault();
+      if (ev.submitter && ev.submitter.value === "cancel") { dlg.close(); return; }
+      var t = byId(dlg.dataset.id);
+      var agreed = Array.prototype.map.call(dlg.querySelectorAll("input[name=agreed]:checked"), function (c) { return c.value; }).join(",");
+      var patch = { decision: dlg.querySelector("#rec-decision").value.trim(), notes: dlg.querySelector("#rec-notes").value.trim(), agreed: agreed, decided_on: dlg.querySelector("#rec-date").value || null };
+      dlg.querySelector(".rec-msg").textContent = "Saving\u2026";
+      saveLive(t, patch).then(function () { dlg.close(); plan(filter); flash("Saved: decision for step " + stepNo(t)); },
+        function () { dlg.querySelector(".rec-msg").textContent = "Couldn\u2019t save. Check your connection and try again."; });
+    };
+    app.querySelectorAll("[data-rec]").forEach(function (b) { b.addEventListener("click", function () { openRec(byId(b.dataset.rec)); }); });
     app.querySelectorAll("select.own").forEach(function (sel) {
       sel.addEventListener("change", function () {
         var t = byId(sel.dataset.id), v = sel.value;

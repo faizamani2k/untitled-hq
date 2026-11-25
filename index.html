@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1A1A1A">
 <title>Untitled. Drop 01</title>
-<link rel="stylesheet" href="css/style.css?v=15">
+<link rel="stylesheet" href="css/style.css?v=16">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -55,8 +55,27 @@
   </div>
 </dialog>
 
-<script src="js/data.js?v=15"></script>
-<script src="js/config.js?v=15"></script>
-<script src="js/app.js?v=15"></script>
+<dialog class="rec" id="rec" aria-labelledby="rec-h">
+  <form method="dialog">
+    <p class="rec-step"></p>
+    <h2 class="rec-title" id="rec-h"></h2>
+    <label for="rec-decision">What did you decide?</label>
+    <textarea id="rec-decision" rows="4" placeholder="e.g. The name is Mortain. Handles @mortain on IG and TikTok."></textarea>
+    <fieldset><legend>Who agreed</legend>
+      <label><input type="checkbox" name="agreed" value="amani"> Amani</label>
+      <label><input type="checkbox" name="agreed" value="jeet"> Jeet</label>
+      <label><input type="checkbox" name="agreed" value="kenny"> Kenny</label>
+    </fieldset>
+    <label for="rec-date">Date decided</label>
+    <input type="date" id="rec-date">
+    <label for="rec-notes">Notes, links, numbers</label>
+    <textarea id="rec-notes" rows="4" placeholder="Anything else worth keeping: prices, contacts, files, reasons."></textarea>
+    <p class="rec-msg" role="status"></p>
+    <div class="rec-actions"><button value="cancel" class="btn-ghost">Cancel</button><button value="save" class="btn">Save decision</button></div>
+  </form>
+</dialog>
+<script src="js/data.js?v=16"></script>
+<script src="js/config.js?v=16"></script>
+<script src="js/app.js?v=16"></script>
 </body>
 </html>

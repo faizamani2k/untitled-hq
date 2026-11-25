@@ -472,3 +472,24 @@ main:focus, main:focus-visible { outline: none; }
   .walk { animation: none; opacity: 1; transform: translateX(-50%); } .walk + .walk { display: none; } .flash { display: none; }
   .look-rail { overflow-x: auto; } .look-track { animation: none; }
 }
+
+/* ---------- plan: decision record ---------- */
+.rec-link { display: block; margin-top: 6px; padding: 0; border: 0; background: none; text-align: left; font-size: 13px; color: var(--ox); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.rec-link.has { color: var(--ink); font-weight: 400; text-decoration: none; border-left: 3px solid var(--olive); padding-left: 8px; max-width: 60ch; }
+.rec-link.has b { font-weight: 700; }
+.rec-link.has:hover { background: rgba(94,91,69,.1); }
+.rec { border: 2px solid var(--ink); padding: 0; width: min(560px, 94vw); max-height: 92vh; background: var(--concrete); color: var(--ink); }
+.rec::backdrop { background: rgba(20,20,20,.6); }
+.rec form { padding: 24px; display: flex; flex-direction: column; gap: 6px; }
+.rec-step { margin: 0; font-size: 13px; color: var(--char); }
+.rec-title { margin: 0 0 12px; font: 900 34px/1 var(--display); text-transform: uppercase; }
+.rec label, .rec legend { font-weight: 600; font-size: 14px; margin-top: 8px; }
+.rec textarea, .rec input[type=date] { font: 16px/1.4 var(--text); padding: 10px; border: 1.5px solid var(--ink); background: #f3f1ec; color: var(--ink); width: 100%; }
+.rec fieldset { border: 0; padding: 0; margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.rec fieldset label { font-weight: 500; display: inline-flex; gap: 6px; align-items: center; margin: 4px 0 0; }
+.rec input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); }
+.rec-msg { margin: 6px 0 0; font-size: 14px; min-height: 1.4em; color: var(--ox); }
+.rec-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+.btn, .btn-ghost { font: 600 15px var(--text); padding: 10px 18px; border: 2px solid var(--ink); cursor: pointer; }
+.btn { background: var(--ink); color: var(--bone); }
+.btn-ghost { background: transparent; color: var(--ink); }
