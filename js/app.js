@@ -32,7 +32,40 @@
       steps.push(Object.assign({ n: steps.length + 1, phase: ph.name, isBreak: !!ph.isBreak }, t));
     });
   });
+  steps.forEach(function (t) { t.id = "t" + String(t.n).padStart(2, "0"); });
   var realSteps = steps.filter(function (t) { return !t.isBreak; });
+
+  // shared status and owner, saved for the whole team
+  var STATUSES = ["To do", "In progress", "Done", "Blocked"];
+  var LIVE = {};
+  function statusOf(t) { return (LIVE[t.id] && LIVE[t.id].status) || t.status || (t.n === 1 ? "In progress" : "To do"); }
+  function ownerOf(t) { return LIVE[t.id] && LIVE[t.id].owner !== undefined && LIVE[t.id].owner !== null ? (LIVE[t.id].owner || null) : t.owner; }
+  function restHeaders(extra) {
+    var h = { apikey: window.SITE_STORAGE.key, "Content-Type": "application/json" };
+    if (/^eyJ/.test(window.SITE_STORAGE.key)) h.Authorization = "Bearer " + window.SITE_STORAGE.key;
+    for (var k in extra) h[k] = extra[k];
+    return h;
+  }
+  function loadLive() {
+    if (!window.SITE_STORAGE) return Promise.resolve();
+    var ctl = window.AbortController ? new AbortController() : null;
+    if (ctl) setTimeout(function () { ctl.abort(); }, 8000);
+    return fetch(window.SITE_STORAGE.url + "/rest/v1/plan_status?select=task_id,status,owner", { headers: restHeaders({}), signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (rows) { rows.forEach(function (r) { LIVE[r.task_id] = { status: r.status, owner: r.owner }; }); })
+      .catch(function () {});
+  }
+  function saveLive(t, patch) {
+    var row = { task_id: t.id, status: statusOf(t), owner: ownerOf(t) || "", updated_at: new Date().toISOString() };
+    for (var k in patch) row[k] = patch[k];
+    LIVE[t.id] = { status: row.status, owner: row.owner };
+    if (!window.SITE_STORAGE) return Promise.reject(new Error("offline"));
+    return fetch(window.SITE_STORAGE.url + "/rest/v1/plan_status?on_conflict=task_id", {
+      method: "POST",
+      headers: restHeaders({ Prefer: "resolution=merge-duplicates,return=minimal" }),
+      body: JSON.stringify(row)
+    }).then(function (r) { if (!r.ok) throw new Error("save"); });
+  }
   function stepNo(t) { return realSteps.indexOf(t) + 1; }
 
   function currentIndex() {
@@ -114,17 +147,17 @@
     var ci = currentIndex();
     var cur = steps[ci];
     var nexts = steps.slice(ci + 1, ci + 4);
-    var who = personName(cur.owner);
+    var who = personName(ownerOf(cur));
 
     var team = S.team.map(function (p) {
-      var mine = realSteps.filter(function (t) { return t.owner === p.id; }).length;
-      var shared = realSteps.filter(function (t) { return t.owner === "all"; }).length;
+      var mine = realSteps.filter(function (t) { return ownerOf(t) === p.id; }).length;
+      var shared = realSteps.filter(function (t) { return ownerOf(t) === "all"; }).length;
       return '<div class="person"><h3>' + esc(p.name) + '</h3><p class="muted">' + esc(p.role) + '</p>' +
         '<p>' + (mine ? mine + (mine === 1 ? " step of their own, " : " steps of their own, ") : "No steps of their own yet, ") + shared + ' shared</p>' +
         '<a href="#/plan/' + p.id + '">See ' + esc(p.name) + '’s steps</a></div>';
     }).join("");
 
-    var unassigned = realSteps.filter(function (t) { return !t.owner; }).length;
+    var unassigned = realSteps.filter(function (t) { return !ownerOf(t); }).length;
 
     app.innerHTML =
       '<section class="wash" aria-label="Drop 01">' +
@@ -144,7 +177,7 @@
           '<div>' +
             '<h2 class="h2">Up next</h2>' +
             '<ol class="next-list">' + nexts.map(function (t) {
-              var w = personName(t.owner);
+              var w = personName(ownerOf(t));
               return '<li><span class="n">' + (t.isBreak ? "—" : String(stepNo(t)).padStart(2, "0")) + '</span><span>' + esc(t.t) + '</span>' +
                 '<span class="d">' + range(t.s, t.e) + (t.isBreak ? "" : ", " + (w ? esc(w) : "nobody yet")) + '</span></li>';
             }).join("") + '</ol>' +
@@ -170,48 +203,81 @@
     var segs = S.phases.map(function (ph) {
       var a = d(ph.tasks[0].s), b = d(ph.tasks[ph.tasks.length - 1].e);
       var w = ((+b - +a) / DAY + 1) / total * 100;
-      return '<div class="seg' + (ph.isBreak ? " brk" : "") + '" style="width:' + w.toFixed(3) + '%" title="' + esc(ph.name) + ', ' + range(ph.tasks[0].s, ph.tasks[ph.tasks.length - 1].e) + '"></div>';
+      return '<div class="seg' + (ph.isBreak ? " brk" : "") + '" style="width:' + w.toFixed(3) + '%" title="' + esc(ph.name) + '"></div>';
     }).join("");
     var tpos = ((+today() - +start) / DAY + 0.5) / total * 100;
     var todayMark = tpos >= 0 && tpos <= 100 ? '<div class="today" style="left:calc(' + tpos.toFixed(3) + '% - 1px)"></div>' : "";
     var brkPh = S.phases.filter(function (p) { return p.isBreak; })[0];
     var brkMid = brkPh ? (((+d(brkPh.tasks[0].s) - +start) / DAY + ((+d(brkPh.tasks[0].e) - +d(brkPh.tasks[0].s)) / DAY + 1) / 2) / total * 100) : null;
-
     var chips = [["", "All"]].concat(S.team.map(function (p) { return [p.id, p.name]; })).concat([["none", "Nobody yet"]]);
+    var owners = [["all", "Everyone"]].concat(S.team.map(function (p) { return [p.id, p.name]; })).concat([["", "Nobody yet"]]);
     var now = +today();
-    var ci = currentIndex();
 
-    var body = S.phases.map(function (ph) {
-      var rows = steps.filter(function (t) { return t.phase === ph.name; }).filter(function (t) {
-        if (!filter) return true;
-        if (filter === "none") return !t.owner && !t.isBreak;
-        return t.owner === filter || t.owner === "all";
-      });
-      if (!rows.length) return "";
-      return '<section class="phase"><div class="phase-head"><h2>' + esc(ph.name) + '</h2><span>' + range(ph.tasks[0].s, ph.tasks[ph.tasks.length - 1].e) + '</span></div><ol class="tasks">' +
-        rows.map(function (t) {
-          var isNow = steps.indexOf(t) === ci && +d(t.s) <= now;
-          var cls = ["task"];
-          if (+d(t.e) < now) cls.push("past");
+    function keep(t) {
+      if (!filter) return true;
+      var o = ownerOf(t);
+      if (filter === "none") return !o && !t.isBreak;
+      return o === filter || o === "all";
+    }
+    function stClass(s) { return "st-" + s.toLowerCase().replace(/\s+/g, ""); }
+
+    var rows = S.phases.map(function (ph) {
+      var list = steps.filter(function (t) { return t.phase === ph.name && keep(t); });
+      if (!list.length) return "";
+      var real = list.filter(function (t) { return !t.isBreak; });
+      var doneN = real.filter(function (t) { return statusOf(t) === "Done"; }).length;
+      return '<tbody class="pgroup">' +
+        '<tr class="ph"><th colspan="7" scope="colgroup"><span class="ph-name">' + esc(ph.name) + '</span>' +
+        '<span class="ph-meta">' + range(ph.tasks[0].s, ph.tasks[ph.tasks.length - 1].e) + (real.length ? '<span data-phdone="' + esc(ph.name) + '">' + doneN + ' of ' + real.length + ' done</span>' : '') + '</span></th></tr>' +
+        list.map(function (t) {
+          var days = Math.round((+d(t.e) - +d(t.s)) / DAY) + 1;
+          var isNow = +d(t.s) <= now && now <= +d(t.e);
+          var st = statusOf(t), o = ownerOf(t);
+          var cls = ["prow", stClass(st)];
           if (isNow) cls.push("is-now");
-          if (t.done) cls.push("done");
           if (t.isBreak) cls.push("brk");
           if (t.isDrop) cls.push("drop");
-          var w = personName(t.owner);
-          return '<li class="' + cls.join(" ") + '">' +
-            '<span class="num">' + (t.isBreak ? "—" : String(stepNo(t)).padStart(2, "0")) + '</span>' +
-            '<span class="title">' + esc(t.t) + (isNow ? ' <span class="flag">Now</span>' : '') + (t.done ? ' <span class="flag" style="color:var(--olive)">Done</span>' : '') + '</span>' +
-            '<span class="info"><span class="dates">' + range(t.s, t.e) + '</span>' +
-            (t.isBreak ? '<span class="who none">No work</span>' : '<span class="who' + (w ? '' : ' none') + '">' + (w ? esc(w) : "Nobody yet") + '</span>') + '</span>' +
-            (t.note ? '<p class="note">' + esc(t.note) + '</p>' : '') +
-          '</li>';
-        }).join("") + '</ol></section>';
+          var ownerCell = t.isBreak ? '<span class="muted">No work</span>' :
+            '<select class="sel own" data-id="' + t.id + '" aria-label="Owner of step ' + stepNo(t) + '">' + owners.map(function (op) {
+              return '<option value="' + op[0] + '"' + ((o || "") === op[0] ? " selected" : "") + '>' + esc(op[1]) + '</option>';
+            }).join("") + '</select>';
+          var statusCell = t.isBreak ? '<span class="muted">Break</span>' :
+            '<select class="sel stat ' + stClass(st) + '" data-id="' + t.id + '" aria-label="Status of step ' + stepNo(t) + '">' + STATUSES.map(function (s) {
+              return '<option' + (s === st ? " selected" : "") + '>' + s + '</option>';
+            }).join("") + '</select>';
+          return '<tr class="' + cls.join(" ") + '" data-row="' + t.id + '">' +
+            '<td class="c-num">' + (t.isBreak ? "—" : String(stepNo(t)).padStart(2, "0")) + '</td>' +
+            '<td class="c-task"><span class="t-title">' + esc(t.t) + '</span>' + (isNow ? ' <span class="flag">Today</span>' : '') +
+              (t.note ? '<span class="t-note">' + esc(t.note) + '</span>' : '') + '</td>' +
+            '<td class="c-date"><span class="lbl">Start</span>' + dm(d(t.s)) + '</td>' +
+            '<td class="c-date"><span class="lbl">End</span>' + dm(d(t.e)) + '</td>' +
+            '<td class="c-days"><span class="lbl">Days</span>' + days + '</td>' +
+            '<td class="c-own">' + ownerCell + '</td>' +
+            '<td class="c-stat">' + statusCell + '</td>' +
+          '</tr>';
+        }).join("") + '</tbody>';
     }).join("");
+
+    function counts() {
+      var c = { "To do": 0, "In progress": 0, "Done": 0, "Blocked": 0 };
+      realSteps.forEach(function (t) { c[statusOf(t)]++; });
+      return c;
+    }
+    function summaryHtml() {
+      var c = counts();
+      var pct = Math.round(c.Done / realSteps.length * 100);
+      return '<div class="sum-item"><b>' + c.Done + '/' + realSteps.length + '</b><span>Done</span></div>' +
+        '<div class="sum-item"><b>' + c["In progress"] + '</b><span>In progress</span></div>' +
+        '<div class="sum-item"><b>' + c.Blocked + '</b><span>Blocked</span></div>' +
+        '<div class="sum-item"><b>' + c["To do"] + '</b><span>To do</span></div>' +
+        '<div class="sum-bar" aria-label="' + pct + '% done"><i style="width:' + pct + '%"></i></div>';
+    }
 
     app.innerHTML =
       '<div class="wrap">' +
         '<h1 class="h1">Plan</h1>' +
-        '<p class="lede">' + realSteps.length + ' steps, one at a time. Each one starts when the one before it ends. Drop 1 is on ' + longDate(S.dropDate) + '.</p>' +
+        '<p class="lede">' + realSteps.length + ' steps, one at a time, to Drop 1 on ' + longDate(S.dropDate) + '. Change a step’s status or owner and it saves for the whole team.</p>' +
+        '<div class="summary" id="summary">' + summaryHtml() + '</div>' +
         '<div class="track" aria-hidden="true">' +
           '<div class="bar">' + segs + todayMark + '</div>' +
           '<div class="track-labels"><span style="left:0">' + dm(start) + '</span>' +
@@ -221,12 +287,42 @@
         '<div class="chips" role="group" aria-label="Show steps for">' + chips.map(function (c) {
           return '<button type="button" class="chip" data-f="' + c[0] + '" aria-pressed="' + ((filter || "") === c[0]) + '">' + esc(c[1]) + '</button>';
         }).join("") + '</div>' +
-        (filter && filter !== "none" ? '<p class="muted small">Showing ' + esc(personName(filter)) + '’s steps and the ones everyone does together.</p>' : '') +
-        body +
+        '<table class="ptable">' +
+          '<thead><tr><th scope="col" class="c-num">#</th><th scope="col">Step</th><th scope="col">Start</th><th scope="col">End</th><th scope="col">Days</th><th scope="col">Owner</th><th scope="col">Status</th></tr></thead>' +
+          rows +
+        '</table>' +
+        '<p class="savemsg" role="status" aria-live="polite"></p>' +
         '<div style="height:48px"></div>' +
       '</div>';
+
+    var msg = app.querySelector(".savemsg");
+    function flash(text, bad) {
+      msg.textContent = text; msg.classList.toggle("bad", !!bad); msg.classList.add("show");
+      clearTimeout(flash.t); flash.t = setTimeout(function () { msg.classList.remove("show"); }, 1800);
+    }
+    function byId(id) { return steps.filter(function (t) { return t.id === id; })[0]; }
     app.querySelectorAll(".chip").forEach(function (b) {
       b.addEventListener("click", function () { location.hash = "#/plan" + (b.dataset.f ? "/" + b.dataset.f : ""); });
+    });
+    app.querySelectorAll("select.stat").forEach(function (sel) {
+      sel.addEventListener("change", function () {
+        var t = byId(sel.dataset.id), v = sel.value;
+        sel.className = "sel stat " + stClass(v);
+        var tr = app.querySelector('[data-row="' + t.id + '"]');
+        STATUSES.forEach(function (s) { tr.classList.remove(stClass(s)); }); tr.classList.add(stClass(v));
+        saveLive(t, { status: v }).then(function () { flash("Saved: step " + stepNo(t) + " is " + v.toLowerCase()); }, function () { flash("Couldn’t save. Check your connection and try again.", true); });
+        document.getElementById("summary").innerHTML = summaryHtml();
+        var ph = S.phases.filter(function (p) { return p.name === t.phase; })[0];
+        var real = steps.filter(function (x) { return x.phase === ph.name && !x.isBreak; });
+        var el = app.querySelector('[data-phdone="' + ph.name + '"]');
+        if (el) el.textContent = real.filter(function (x) { return statusOf(x) === "Done"; }).length + " of " + real.length + " done";
+      });
+    });
+    app.querySelectorAll("select.own").forEach(function (sel) {
+      sel.addEventListener("change", function () {
+        var t = byId(sel.dataset.id), v = sel.value;
+        saveLive(t, { owner: v }).then(function () { flash("Saved: step " + stepNo(t) + " is now " + (personName(v) || "nobody’s yet")); }, function () { flash("Couldn’t save. Check your connection and try again.", true); });
+      });
     });
   }
 
@@ -400,4 +496,9 @@
     if (!first) app.focus({ preventScroll: true });
   });
   route(); first = false;
+  loadLive().then(function () { if (!document.querySelector("select:focus")) route(); });
+  // pick up teammates' changes when someone comes back to the tab
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && !document.querySelector("select:focus")) loadLive().then(route);
+  });
 })();
