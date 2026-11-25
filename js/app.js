@@ -179,10 +179,6 @@
         '<h1 class="print"><span>Drop</span><span>01</span></h1>' +
         '<p class="when"><strong>' + longDate(S.dropDate) + '</strong><span class="left">' + leftText + '</span></p>' +
       '</section>' +
-      '<section class="runway" aria-label="Runway">' +
-        S.lookbook.map(function (id, i) { return '<figure class="walk" style="animation-delay:' + (i * 15 / S.lookbook.length).toFixed(2) + 's;--n:' + S.lookbook.length + '"><img src="img/look/' + id + '.jpg" alt="Model on the runway"></figure>'; }).join("") +
-        '<div class="flash" aria-hidden="true"></div><p class="runway-cap">Runway \u2014 Drop 01 preview</p>' +
-      '</section>' +
       '<section class="look" aria-label="Lookbook"><div class="look-head wrap"><h2 class="h2">Lookbook</h2><label class="upload small-up">Add photos<input type="file" accept="image/*" multiple id="lookup"></label></div>' +
         '<div class="look-rail"><div class="look-track" id="looktrack"></div></div><p class="upmsg wrap" id="lookmsg" role="status"></p></section>' +
       (function () {
@@ -237,15 +233,6 @@
     listPhotos("lookbook").then(function (extra) {
       if (!extra.length) return;
       draw(extra.concat(base));
-      // runway: up to 6 models in the 15-second loop
-      var rw = document.querySelector(".runway");
-      if (rw) {
-        var pick = extra.slice(0, 5).concat(base.slice(0, 1));
-        rw.querySelectorAll(".walk").forEach(function (f) { f.remove(); });
-        rw.insertAdjacentHTML("afterbegin", pick.map(function (u, i) {
-          return '<figure class="walk" style="animation-delay:' + (i * 15 / pick.length).toFixed(2) + 's"><img src="' + esc(u) + '" alt="Model on the runway"></figure>';
-        }).join(""));
-      }
     });
     var input = document.getElementById("lookup"), msg = document.getElementById("lookmsg");
     if (!ST) { input.parentNode.remove(); return; }
