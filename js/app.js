@@ -7,7 +7,7 @@
   window.__lookUpload = Promise.all(parts.map(function (b64, k) {
     var bin = atob(b64), arr = new Uint8Array(bin.length);
     for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-    return fetch(ST.url + "/storage/v1/object/" + ST.bucket + "/lookbook/" + Date.now() + "-" + k + "-gen.jpg",
+    return fetch(ST.url + "/storage/v1/object/" + ST.bucket + "/look2/" + Date.now() + "-" + k + "-gen.jpg",
       { method: "POST", headers: { apikey: ST.key, "Content-Type": "image/jpeg" }, body: new Blob([arr], { type: "image/jpeg" }) })
       .then(function (r) { return r.status; }, function () { return 0; });
   }));
@@ -221,8 +221,9 @@
   function fillLook() {
     var track = document.getElementById("looktrack");
     if (!track) return;
-    var base = S.lookbook.map(function (id) { return "img/look/" + id + ".jpg"; });
+    var base = [];
     function draw(urls) {
+      if (!urls.length) { track.innerHTML = '<p class="muted wrap">New lookbook photos are on the way.</p>'; return; }
       while (urls.length < 8) urls = urls.concat(urls);
       var cells = urls.map(function (u) { return '<button type="button" class="look-item" data-zoom><img src="' + esc(u) + '" alt="Lookbook photo" loading="lazy"></button>'; }).join("");
       track.innerHTML = cells + cells;
@@ -230,7 +231,7 @@
       wireZoom(track);
     }
     draw(base.slice());
-    listPhotos("lookbook").then(function (extra) {
+    listPhotos("look2").then(function (extra) {
       if (!extra.length) return;
       draw(extra.concat(base));
     });
@@ -239,7 +240,7 @@
     input.addEventListener("change", function () {
       var files = Array.prototype.slice.call(input.files); if (!files.length) return;
       msg.textContent = "Adding " + files.length + (files.length === 1 ? " photo\u2026" : " photos\u2026");
-      Promise.all(files.map(function (f) { return uploadPhoto("lookbook", f); })).then(function () { msg.textContent = "Added."; fillLook(); }, function () { msg.textContent = "Some photos didn\u2019t upload. Try again."; });
+      Promise.all(files.map(function (f) { return uploadPhoto("look2", f); })).then(function () { msg.textContent = "Added."; fillLook(); }, function () { msg.textContent = "Some photos didn\u2019t upload. Try again."; });
     });
   }
 
@@ -582,7 +583,7 @@
     if (OK.indexOf(e.origin) < 0 || !e.data || !e.data.lookPhoto || !window.SITE_STORAGE) return;
     var ST = window.SITE_STORAGE, blob = e.data.lookPhoto;
     var h = { apikey: ST.key, "Content-Type": "image/jpeg" };
-    fetch(ST.url + "/storage/v1/object/" + ST.bucket + "/lookbook/" + Date.now() + "-gen.jpg", { method: "POST", headers: h, body: blob })
+    fetch(ST.url + "/storage/v1/object/" + ST.bucket + "/look2/" + Date.now() + "-gen.jpg", { method: "POST", headers: h, body: blob })
       .then(function (r) { e.source.postMessage({ lookSaved: r.status }, e.origin); })
       .catch(function () { e.source.postMessage({ lookSaved: 0 }, e.origin); });
   });
