@@ -2,13 +2,15 @@
 (function () {
   var h = location.hash;
   if (h.indexOf("#lookdata=") !== 0 || !window.SITE_STORAGE) return;
-  var b64 = decodeURIComponent(h.slice(10)); history.replaceState(null, "", location.pathname + "#/");
-  var bin = atob(b64), arr = new Uint8Array(bin.length);
-  for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  var parts = decodeURIComponent(h.slice(10)).split("~"); history.replaceState(null, "", location.pathname + "#/");
   var ST = window.SITE_STORAGE;
-  window.__lookUpload = fetch(ST.url + "/storage/v1/object/" + ST.bucket + "/lookbook/" + Date.now() + "-gen.jpg",
-    { method: "POST", headers: { apikey: ST.key, "Content-Type": "image/jpeg" }, body: new Blob([arr], { type: "image/jpeg" }) })
-    .then(function (r) { return r.status; }, function () { return 0; });
+  window.__lookUpload = Promise.all(parts.map(function (b64, k) {
+    var bin = atob(b64), arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return fetch(ST.url + "/storage/v1/object/" + ST.bucket + "/lookbook/" + Date.now() + "-" + k + "-gen.jpg",
+      { method: "POST", headers: { apikey: ST.key, "Content-Type": "image/jpeg" }, body: new Blob([arr], { type: "image/jpeg" }) })
+      .then(function (r) { return r.status; }, function () { return 0; });
+  }));
 })();
 
 (function () {
