@@ -467,8 +467,14 @@
           '<div class="typerow"><div><h3>Flowing script</h3><p>Across the chest, down a sleeve.</p></div><p class="sample s-script">Drop one</p></div>' +
           '<div class="typerow"><div><h3>Cracked condensed</h3><p>Big back prints that crack as they wear.</p></div><p class="sample s-crack">Works 01</p></div>' +
         '</section>' +
+        '<section class="sec" id="lettering"><h2 class="h2">Lettering maker</h2>' +
+          '<p class="muted" style="margin-top:-6px">Type a word to see it in 12 styles. Download any of them as a PNG.</p>' +
+          '<label class="lt-label" for="lt-word">Word</label><input id="lt-word" class="lt-input" maxlength="24" value="' + esc(S.workingName === "Untitled" ? "Mortain" : S.workingName) + '" autocomplete="off">' +
+          '<div class="lt-grid" id="lt-grid"></div>' +
+        '</section>' +
         '<section class="sec"><h2 class="h2">Details to use</h2><ul class="ruled">' + S.details.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></section>' +
       '</div>';
+    if (window.Lettering) window.Lettering.mount(app.querySelector("#lettering"));
     app.querySelectorAll(".swatch").forEach(function (b) {
       b.addEventListener("click", function () {
         var hex = b.dataset.hex, span = b.querySelector("span:last-child");

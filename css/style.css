@@ -5,6 +5,10 @@
 @font-face { font-family: "Archivo"; src: url("../fonts/archivo-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; }
 @font-face { font-family: "Archivo"; src: url("../fonts/archivo-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 @font-face { font-family: "Blackletter"; src: url("../fonts/unifrakturcook-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Anton"; src: url("../fonts/anton-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Pirata One"; src: url("../fonts/pirata-one-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Monsieur La Doulaise"; src: url("../fonts/monsieur-la-doulaise-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Rubik Dirt"; src: url("../fonts/rubik-dirt-latin-400-normal.woff2") format("woff2"); font-display: swap; }
 @font-face { font-family: "Script"; src: url("../fonts/pinyon-script-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 
 :root {
@@ -493,3 +497,15 @@ main:focus, main:focus-visible { outline: none; }
 .btn, .btn-ghost { font: 600 15px var(--text); padding: 10px 18px; border: 2px solid var(--ink); cursor: pointer; }
 .btn { background: var(--ink); color: var(--bone); }
 .btn-ghost { background: transparent; color: var(--ink); }
+
+/* ---------- style: lettering maker ---------- */
+.lt-label { display: block; font-weight: 600; font-size: 14px; margin: 18px 0 6px; }
+.lt-input { font: 900 clamp(32px, 6vw, 56px)/1 var(--display); text-transform: uppercase; width: 100%; max-width: 640px; padding: 10px 14px; border: 2px solid var(--ink); background: #f3f1ec; color: var(--ink); }
+.lt-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px; }
+@media (min-width: 760px) { .lt-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1100px) { .lt-grid { grid-template-columns: repeat(4, 1fr); } }
+.lt-card { margin: 0; }
+.lt-art svg { display: block; width: 100%; height: auto; border: 1.5px solid var(--ink); }
+.lt-card figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 6px; font-size: 14px; font-weight: 600; }
+.lt-dl { font: 600 13px var(--text); background: none; border: 1.5px solid var(--ink); padding: 4px 10px; cursor: pointer; white-space: nowrap; }
+.lt-dl:hover { background: var(--ink); color: var(--bone); }
