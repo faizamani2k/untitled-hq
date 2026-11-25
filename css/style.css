@@ -1,3 +1,15 @@
+@font-face { font-family: "UnifrakturMaguntia"; src: url("../fonts/unifrakturmaguntia-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Grenze Gotisch"; src: url("../fonts/grenze-gotisch-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Great Vibes"; src: url("../fonts/great-vibes-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Abril Fatface"; src: url("../fonts/abril-fatface-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Rubik Glitch"; src: url("../fonts/rubik-glitch-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Rubik Wet Paint"; src: url("../fonts/rubik-wet-paint-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Permanent Marker"; src: url("../fonts/permanent-marker-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Rock Salt"; src: url("../fonts/rock-salt-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Metal Mania"; src: url("../fonts/metal-mania-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Monoton"; src: url("../fonts/monoton-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Bebas Neue"; src: url("../fonts/bebas-neue-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Rye"; src: url("../fonts/rye-latin-400-normal.woff2") format("woff2"); font-display: swap; }
 @font-face { font-family: "Shoulders"; src: url("../fonts/big-shoulders-display-latin-800-normal.woff2") format("woff2"); font-weight: 800; font-display: swap; }
 @font-face { font-family: "Shoulders"; src: url("../fonts/big-shoulders-display-latin-900-normal.woff2") format("woff2"); font-weight: 900; font-display: swap; }
 @font-face { font-family: "Archivo"; src: url("../fonts/archivo-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }

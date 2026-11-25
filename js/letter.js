@@ -9,7 +9,19 @@
     doulaise: { family: "Monsieur La Doulaise", file: "fonts/monsieur-la-doulaise-latin-400-normal.woff2" },
     pinyon: { family: "Script", file: "fonts/pinyon-script-latin-400-normal.woff2" },
     dirt: { family: "Rubik Dirt", file: "fonts/rubik-dirt-latin-400-normal.woff2" },
-    archivo: { family: "Archivo", file: "fonts/archivo-latin-700-normal.woff2", weight: 700 }
+    archivo: { family: "Archivo", file: "fonts/archivo-latin-700-normal.woff2", weight: 700 },
+    maguntia: { family: "UnifrakturMaguntia", file: "fonts/unifrakturmaguntia-latin-400-normal.woff2" },
+    grenze: { family: "Grenze Gotisch", file: "fonts/grenze-gotisch-latin-400-normal.woff2" },
+    vibes: { family: "Great Vibes", file: "fonts/great-vibes-latin-400-normal.woff2" },
+    abril: { family: "Abril Fatface", file: "fonts/abril-fatface-latin-400-normal.woff2" },
+    glitch: { family: "Rubik Glitch", file: "fonts/rubik-glitch-latin-400-normal.woff2" },
+    wet: { family: "Rubik Wet Paint", file: "fonts/rubik-wet-paint-latin-400-normal.woff2" },
+    marker: { family: "Permanent Marker", file: "fonts/permanent-marker-latin-400-normal.woff2" },
+    salt: { family: "Rock Salt", file: "fonts/rock-salt-latin-400-normal.woff2" },
+    metal: { family: "Metal Mania", file: "fonts/metal-mania-latin-400-normal.woff2" },
+    monoton: { family: "Monoton", file: "fonts/monoton-latin-400-normal.woff2" },
+    bebas: { family: "Bebas Neue", file: "fonts/bebas-neue-latin-400-normal.woff2" },
+    rye: { family: "Rye", file: "fonts/rye-latin-400-normal.woff2" }
   };
   var C = { ink: "#1A1A1A", char: "#3A3A3A", fade: "#8C8C8C", bone: "#EDE6D6", ox: "#7A1E22", olive: "#5E5B45" };
 
@@ -63,7 +75,30 @@
         txt(u, { font: "archivo", y: 425, size: 90, fill: C.ink, len: fit(u, 580, 75) }) +
         '<line x1="110" y1="475" x2="690" y2="475" stroke="' + C.ink + '" stroke-width="4"/>' +
         txt("DROP 01", { font: "archivo", y: 540, size: 30, fill: C.ink, ls: 14 }); } },
-    { name: "Down the leg", fonts: ["anton"], draw: function (w) { var u = w.toUpperCase(); return bg(C.ink) + txt(u, { font: "anton", x: 400, y: 400, size: 150, fill: C.ox, len: fit(u, 720, 95), tr: "rotate(90 400 400) translate(0 55)" }); } }
+    { name: "Down the leg", fonts: ["anton"], draw: function (w) { var u = w.toUpperCase(); return bg(C.ink) + txt(u, { font: "anton", x: 400, y: 400, size: 150, fill: C.ox, len: fit(u, 720, 95), tr: "rotate(90 400 400) translate(0 55)" }); } },
+    { name: "Old gothic", fonts: ["maguntia"], draw: function (w) { return bg(C.ink) + txt(w, { font: "maguntia", y: 455, size: 190, fill: C.bone, len: fit(w, 700, 100) }); } },
+    { name: "Tall gothic", fonts: ["grenze"], draw: function (w) { return bg(C.bone) + txt(w, { font: "grenze", y: 470, size: 240, fill: C.ink, len: fit(w, 640, 95) }); } },
+    { name: "Tonal gothic", fonts: ["pirata"], draw: function (w) { return bg(C.ink) + txt(w, { font: "pirata", y: 455, size: 210, fill: "#2A2A2A", stroke: "#4A4A4A", sw: 2, len: fit(w, 700, 105) }); } },
+    { name: "Gothic, cracked", fonts: ["maguntia"], draw: function (w) { return bg(C.char) + txt(w, { font: "maguntia", y: 460, size: 200, fill: C.bone, len: fit(w, 700, 100), filter: true }); } },
+    { name: "Wedding script", fonts: ["vibes"], draw: function (w) { return bg(C.bone) + txt(w, { font: "vibes", y: 460, size: 200, fill: C.ox, len: fit(w, 660, 95) }); } },
+    { name: "Script on chest", fonts: ["vibes"], draw: function (w) { return bg(C.ink) + txt(w, { font: "vibes", y: 440, size: 170, fill: C.bone, len: fit(w, 740, 105), tr: "rotate(-4 400 400)" }) + '<path d="M90 500 C 300 520, 520 470, 720 505" fill="none" stroke="' + C.bone + '" stroke-width="3"/>'; } },
+    { name: "Serif luxe", fonts: ["abril"], draw: function (w) { var u = w.toUpperCase(); return bg(C.bone) + txt(u, { font: "abril", y: 450, size: 140, fill: C.ink, len: fit(u, 660, 85) }); } },
+    { name: "Glitch", fonts: ["glitch"], draw: function (w) { var u = w.toUpperCase(); return bg(C.ink) + txt(u, { font: "glitch", x: 408, y: 455, size: 150, fill: C.ox, len: fit(u, 680, 90) }) + txt(u, { font: "glitch", y: 450, size: 150, fill: C.bone, len: fit(u, 680, 90) }); } },
+    { name: "Wet paint", fonts: ["wet"], draw: function (w) { var u = w.toUpperCase(); return bg(C.bone) + txt(u, { font: "wet", y: 440, size: 150, fill: C.ox, len: fit(u, 680, 90) }); } },
+    { name: "Marker tag", fonts: ["marker"], draw: function (w) { return bg(C.fade) + txt(w, { font: "marker", y: 450, size: 160, fill: C.ink, len: fit(w, 660, 85), tr: "rotate(-8 400 400)" }); } },
+    { name: "Hand scrawl", fonts: ["salt"], draw: function (w) { return bg(C.ink) + txt(w, { font: "salt", y: 430, size: 110, fill: C.bone, len: fit(w, 680, 80), tr: "rotate(-5 400 400)" }); } },
+    { name: "Metal", fonts: ["metal"], draw: function (w) { var u = w.toUpperCase(); return bg(C.ink) + txt(u, { font: "metal", y: 460, size: 170, fill: C.bone, len: fit(u, 700, 100) }); } },
+    { name: "Neon lines", fonts: ["monoton"], draw: function (w) { var u = w.toUpperCase(); return bg(C.ink) + txt(u, { font: "monoton", y: 450, size: 130, fill: C.bone, len: fit(u, 700, 95) }); } },
+    { name: "Western", fonts: ["rye"], draw: function (w) { var u = w.toUpperCase(); return bg(C.bone) + txt(u, { font: "rye", y: 450, size: 130, fill: C.ink, len: fit(u, 660, 85) }) + txt("SINCE 2027", { font: "archivo", y: 540, size: 30, fill: C.ox, ls: 12 }); } },
+    { name: "Bold sans, faded", fonts: ["bebas"], draw: function (w) { var u = w.toUpperCase(); return '<defs><linearGradient id="fd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#77746f"/><stop offset="1" stop-color="#141414"/></linearGradient></defs><rect width="800" height="800" fill="url(#fd)"/>' + txt(u, { font: "bebas", y: 500, size: 300, fill: C.bone, len: fit(u, 720, 120), filter: true }); } },
+    { name: "Repeat wall", fonts: ["bebas"], draw: function (w) { var u = w.toUpperCase(), s = bg(C.ox); for (var y = 110; y < 800; y += 110) s += txt(u, { font: "bebas", y: y, size: 110, fill: y === 440 ? C.bone : "none", stroke: C.bone, sw: 1.5, len: fit(u, 740, 70) }); return s; } },
+    { name: "Circle stamp", fonts: ["archivo", "pirata"], draw: function (w) { var u = w.toUpperCase();
+      return bg(C.bone) + '<defs><path id="cr" d="M400 400 m -250 0 a 250 250 0 1 1 500 0 a 250 250 0 1 1 -500 0"/></defs>' +
+        '<circle cx="400" cy="400" r="290" fill="none" stroke="' + C.ink + '" stroke-width="6"/><circle cx="400" cy="400" r="200" fill="none" stroke="' + C.ink + '" stroke-width="3"/>' +
+        '<text font-family="Archivo" font-weight="700" font-size="46" fill="' + C.ink + '" letter-spacing="8"><textPath href="#cr" startOffset="0">' + esc(u) + ' \u2022 ' + esc(u) + ' \u2022 ' + '</textPath></text>' +
+        txt(w.charAt(0).toUpperCase(), { font: "pirata", y: 470, size: 220, fill: C.ink }); } },
+    { name: "Monogram", fonts: ["maguntia", "archivo"], draw: function (w) { var u = w.toUpperCase();
+      return bg(C.ink) + txt(w.charAt(0).toUpperCase(), { font: "maguntia", y: 520, size: 420, fill: C.bone }) + txt(u, { font: "archivo", y: 680, size: 34, fill: C.fade, ls: 16 }); } }
   ];
   function bg(c) { return '<rect width="800" height="800" fill="' + c + '"/>'; }
 
