@@ -560,3 +560,17 @@
     if (document.visibilityState === "visible" && !document.querySelector("select:focus")) loadLive().then(route);
   });
 })();
+
+// Receives generated lookbook photos handed over from the team's image tool tab.
+(function () {
+  var OK = ["https://gemini.google.com"];
+  window.addEventListener("message", function (e) {
+    if (OK.indexOf(e.origin) < 0 || !e.data || !e.data.lookPhoto || !window.SITE_STORAGE) return;
+    var ST = window.SITE_STORAGE, blob = e.data.lookPhoto;
+    var h = { apikey: ST.key, "Content-Type": "image/jpeg" };
+    fetch(ST.url + "/storage/v1/object/" + ST.bucket + "/lookbook/" + Date.now() + "-gen.jpg", { method: "POST", headers: h, body: blob })
+      .then(function (r) { e.source.postMessage({ lookSaved: r.status }, e.origin); })
+      .catch(function () { e.source.postMessage({ lookSaved: 0 }, e.origin); });
+  });
+  if (window.opener) try { window.opener.postMessage({ lookReady: true }, "https://gemini.google.com"); } catch (x) {}
+})();
