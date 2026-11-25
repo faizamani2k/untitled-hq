@@ -419,3 +419,14 @@ main:focus, main:focus-visible { outline: none; }
 .mb-details li { padding: 8px 0; border-top: 1px solid var(--fade); }
 .mb-details li:first-child { border-top: 0; padding-top: 0; }
 @media (prefers-reduced-motion: reduce) { .mb-tile:hover img, .j-tile:hover img { transform: none; } }
+
+/* ---------- home: clothes rail ---------- */
+.rail { overflow: hidden; background: var(--bone); border-bottom: 2px solid var(--ink); padding: 18px 0; }
+.rail-track { display: flex; gap: 14px; width: max-content; animation: rail 30s linear infinite; }
+.rail:hover .rail-track { animation-play-state: paused; }
+.rail-item { flex: 0 0 auto; width: 170px; text-decoration: none; }
+.rail-item img { width: 170px; height: 212px; object-fit: cover; background: var(--concrete-2); }
+.rail-item span { display: block; margin-top: 6px; font: 800 17px/1 var(--display); text-transform: uppercase; }
+@media (min-width: 860px) { .rail-item, .rail-item img { width: 220px; } .rail-item img { height: 275px; } }
+@keyframes rail { to { transform: translateX(calc(-50% - 7px)); } }
+@media (prefers-reduced-motion: reduce) { .rail { overflow-x: auto; } .rail-track { animation: none; } }

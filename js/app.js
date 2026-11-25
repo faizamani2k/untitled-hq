@@ -164,6 +164,10 @@
         '<h1 class="print"><span>Drop</span><span>01</span></h1>' +
         '<p class="when"><strong>' + longDate(S.dropDate) + '</strong><span class="left">' + leftText + '</span></p>' +
       '</section>' +
+      (function () {
+        var cells = S.pieces.map(function (p) { return '<a class="rail-item" href="#/pieces/' + p.id + '" tabindex="-1"><img src="' + img(p.refs[0]) + '" alt=""><span>' + esc(p.name) + '</span></a>'; }).join("");
+        return '<section class="rail" aria-label="All pieces, scrolling"><div class="rail-track">' + cells + cells + '</div></section>';
+      })() +
       '<div class="wrap">' +
         '<section class="sec now">' +
           '<div>' +
