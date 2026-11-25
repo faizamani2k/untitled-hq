@@ -66,6 +66,9 @@ window.SITE = {
     { name: "Outerwear and objects", note: "Hoods, leather, engraved metal.", imgs: ["03", "02", "07"] }
   ],
 
+  // Saved AI images the team removed
+  hiddenAI: ["1795590785972.jpg"],
+
   // Model photos for the home page. Add more files to img/look/ or upload them on the site.
   lookbook: ["l01", "l02", "l03", "l04"],
 

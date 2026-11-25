@@ -30,7 +30,8 @@
       method: "POST", headers: { apikey: ST.key, "Content-Type": "application/json" },
       body: JSON.stringify({ prefix: "ai/", limit: 200, sortBy: { column: "created_at", order: "desc" } })
     }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
-      return rows.filter(function (o) { return o.id; }).map(function (o) { return ST.url + "/storage/v1/object/public/" + ST.bucket + "/ai/" + encodeURIComponent(o.name); });
+      var hide = (window.SITE && window.SITE.hiddenAI) || [];
+      return rows.filter(function (o) { return o.id && hide.indexOf(o.name) < 0; }).map(function (o) { return ST.url + "/storage/v1/object/public/" + ST.bucket + "/ai/" + encodeURIComponent(o.name); });
     }).catch(function () { return []; });
   }
 
