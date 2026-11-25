@@ -164,6 +164,12 @@
         '<h1 class="print"><span>Drop</span><span>01</span></h1>' +
         '<p class="when"><strong>' + longDate(S.dropDate) + '</strong><span class="left">' + leftText + '</span></p>' +
       '</section>' +
+      '<section class="runway" aria-label="Runway">' +
+        S.lookbook.map(function (id, i) { return '<figure class="walk" style="animation-delay:' + (i * 15 / S.lookbook.length).toFixed(2) + 's;--n:' + S.lookbook.length + '"><img src="img/look/' + id + '.jpg" alt="Model on the runway"></figure>'; }).join("") +
+        '<div class="flash" aria-hidden="true"></div><p class="runway-cap">Runway \u2014 Drop 01 preview</p>' +
+      '</section>' +
+      '<section class="look" aria-label="Lookbook"><div class="look-head wrap"><h2 class="h2">Lookbook</h2><label class="upload small-up">Add photos<input type="file" accept="image/*" multiple id="lookup"></label></div>' +
+        '<div class="look-rail"><div class="look-track" id="looktrack"></div></div><p class="upmsg wrap" id="lookmsg" role="status"></p></section>' +
       (function () {
         var cells = S.pieces.map(function (p) { return '<a class="rail-item" href="#/pieces/' + p.id + '" tabindex="-1"><img src="' + img(p.refs[0]) + '" alt=""><span>' + esc(p.name) + '</span></a>'; }).join("");
         return '<section class="rail" aria-label="All pieces, scrolling"><div class="rail-track">' + cells + cells + '</div></section>';
@@ -199,6 +205,28 @@
           '<ul class="names">' + S.names.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join("") + '</ul>' +
         '</section>' +
       '</div>';
+  }
+
+  function fillLook() {
+    var track = document.getElementById("looktrack");
+    if (!track) return;
+    var base = S.lookbook.map(function (id) { return "img/look/" + id + ".jpg"; });
+    function draw(urls) {
+      while (urls.length < 8) urls = urls.concat(urls);
+      var cells = urls.map(function (u) { return '<button type="button" class="look-item" data-zoom><img src="' + esc(u) + '" alt="Lookbook photo" loading="lazy"></button>'; }).join("");
+      track.innerHTML = cells + cells;
+      track.style.animationDuration = (urls.length * 4) + "s";
+      wireZoom(track);
+    }
+    draw(base.slice());
+    listPhotos("lookbook").then(function (extra) { if (extra.length) draw(extra.concat(base)); });
+    var input = document.getElementById("lookup"), msg = document.getElementById("lookmsg");
+    if (!ST) { input.parentNode.remove(); return; }
+    input.addEventListener("change", function () {
+      var files = Array.prototype.slice.call(input.files); if (!files.length) return;
+      msg.textContent = "Adding " + files.length + (files.length === 1 ? " photo\u2026" : " photos\u2026");
+      Promise.all(files.map(function (f) { return uploadPhoto("lookbook", f); })).then(function () { msg.textContent = "Added."; fillLook(); }, function () { msg.textContent = "Some photos didn\u2019t upload. Try again."; });
+    });
   }
 
   function plan(filter) {
@@ -517,7 +545,7 @@
     else if (key === "pieces" && parts[1] === "type") pieces(decodeURIComponent(parts[2] || ""));
     else if (key === "pieces" && parts[1]) piece(parts[1]);
     else if (key === "pieces") pieces();
-    else { key = "home"; home(); }
+    else { key = "home"; home(); fillLook(); }
     document.title = (key === "home" ? "Untitled. Drop 01" : names[key] + ". Untitled");
   }
   var first = true;

@@ -66,6 +66,9 @@ window.SITE = {
     { name: "Outerwear and objects", note: "Hoods, leather, engraved metal.", imgs: ["03", "02", "07"] }
   ],
 
+  // Model photos for the home page. Add more files to img/look/ or upload them on the site.
+  lookbook: ["l01", "l02", "l03", "l04"],
+
   // Board page, laid out like the Canva board
   boardMain: ["34", "16", "30", "20", "32", "15", "10", "28", "33", "14"],
   boardMore: [["05", "02", "13", "08"], ["17", "03", "22", "07"], ["21", "23", "27"], ["06", "18", "31", "24", "26"]],
