@@ -444,15 +444,13 @@ main:focus, main:focus-visible { outline: none; }
   filter: contrast(1.08) saturate(.85); }
 @keyframes walk {
   0%   { opacity: 0; transform: translateX(-50%) translateY(-34%) scale(.42); }
-  4%   { opacity: 1; }
-  6%   { transform: translateX(-50%) translateY(-31%) scale(.47) rotate(-.6deg); }
-  9%   { transform: translateX(-50%) translateY(-27%) scale(.54) rotate(.6deg); }
-  12%  { transform: translateX(-50%) translateY(-22%) scale(.62) rotate(-.6deg); }
-  15%  { transform: translateX(-50%) translateY(-16%) scale(.72) rotate(.6deg); }
-  18%  { transform: translateX(-50%) translateY(-9%) scale(.84) rotate(-.4deg); }
-  21%  { transform: translateX(-50%) translateY(-2%) scale(.97); }
-  23%  { opacity: 1; transform: translateX(-50%) translateY(2%) scale(1.04); }
-  26%  { opacity: 0; transform: translateX(-50%) translateY(6%) scale(1.12); }
+  2.5% { opacity: 1; }
+  4.5% { transform: translateX(-50%) translateY(-30%) scale(.48) rotate(-.6deg); }
+  7%   { transform: translateX(-50%) translateY(-24%) scale(.58) rotate(.6deg); }
+  9.5% { transform: translateX(-50%) translateY(-16%) scale(.72) rotate(-.6deg); }
+  12%  { transform: translateX(-50%) translateY(-7%) scale(.88) rotate(.5deg); }
+  14.5%{ opacity: 1; transform: translateX(-50%) translateY(2%) scale(1.03); }
+  17.5%{ opacity: 0; transform: translateX(-50%) translateY(6%) scale(1.12); }
   100% { opacity: 0; transform: translateX(-50%) translateY(6%) scale(1.12); }
 }
 .flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; animation: flash 3.75s steps(1) infinite; }

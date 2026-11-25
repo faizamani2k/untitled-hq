@@ -234,7 +234,19 @@
       wireZoom(track);
     }
     draw(base.slice());
-    listPhotos("lookbook").then(function (extra) { if (extra.length) draw(extra.concat(base)); });
+    listPhotos("lookbook").then(function (extra) {
+      if (!extra.length) return;
+      draw(extra.concat(base));
+      // runway: up to 6 models in the 15-second loop
+      var rw = document.querySelector(".runway");
+      if (rw) {
+        var pick = extra.slice(0, 5).concat(base.slice(0, 1));
+        rw.querySelectorAll(".walk").forEach(function (f) { f.remove(); });
+        rw.insertAdjacentHTML("afterbegin", pick.map(function (u, i) {
+          return '<figure class="walk" style="animation-delay:' + (i * 15 / pick.length).toFixed(2) + 's"><img src="' + esc(u) + '" alt="Model on the runway"></figure>';
+        }).join(""));
+      }
+    });
     var input = document.getElementById("lookup"), msg = document.getElementById("lookmsg");
     if (!ST) { input.parentNode.remove(); return; }
     input.addEventListener("change", function () {
