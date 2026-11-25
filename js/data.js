@@ -66,6 +66,12 @@ window.SITE = {
     { name: "Outerwear and objects", note: "Hoods, leather, engraved metal.", imgs: ["03", "02", "07"] }
   ],
 
+  // Board page, laid out like the Canva board
+  boardMain: ["34", "16", "30", "20", "32", "15", "10", "28", "33", "14"],
+  boardMore: [["05", "02", "13", "08"], ["17", "03", "22", "07"], ["21", "23", "27"], ["06", "18", "31", "24", "26"]],
+  imgRatio: {"03": 0.672, "26": 0.832, "14": 1.112, "28": 0.743, "32": 0.762, "20": 0.796, "07": 0.562, "05": 1.198, "31": 1.05, "15": 0.788, "13": 0.775, "08": 0.561, "23": 0.958, "10": 0.561, "22": 0.749, "06": 1.129, "30": 1.075, "18": 1.234, "24": 0.834, "02": 0.607, "34": 0.779, "16": 1.239, "17": 1.202, "21": 1.0, "33": 0.799, "27": 0.832},
+  keyPieces: "Boxy tees, heavy hoodies, thermal longsleeves, wide-leg denim, graphic sweatpants",
+
   palette: [
     { name: "Washed black", hex: "#1A1A1A" },
     { name: "Charcoal",     hex: "#3A3A3A" },

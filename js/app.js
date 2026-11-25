@@ -327,18 +327,44 @@
   }
 
   function board() {
-    var count = S.board.reduce(function (a, g) { return a + g.imgs.length; }, 0);
+    var areas = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+    var main = S.boardMain.map(function (id, i) {
+      return '<button type="button" class="mb-tile" style="grid-area:' + areas[i] + '" data-zoom><img src="' + img(id) + '" alt="Mood board reference" loading="lazy"></button>';
+    }).join("");
+    var more = S.boardMore.map(function (row) {
+      return '<div class="jrow">' + row.map(function (id) {
+        var r = S.imgRatio[id] || 0.8;
+        return '<button type="button" class="j-tile" style="flex:' + r + ' 1 0;aspect-ratio:' + r + '" data-zoom><img src="' + img(id) + '" alt="Mood board reference" loading="lazy"></button>';
+      }).join("") + '</div>';
+    }).join("");
+    var swatches = S.palette.map(function (c) {
+      return '<li><span class="sw" style="background:' + c.hex + '"></span><span>' + esc(c.name) + '<br><span class="muted">' + c.hex + '</span></span></li>';
+    }).join("");
+    var count = S.boardMain.length + S.boardMore.reduce(function (n, r) { return n + r.length; }, 0);
+
     app.innerHTML =
-      '<div class="wrap">' +
-        '<h1 class="h1">Board</h1>' +
-        '<p class="lede">' + count + ' references from the group chat, sorted by idea. Tap one to see it big. There’s also a <a class="textlink" href="' + esc(S.canvaBoard) + '" target="_blank" rel="noopener">version in Canva</a>.</p>' +
-        S.board.map(function (g) {
-          return '<section class="group"><div class="group-head"><h2>' + esc(g.name) + '</h2><p>' + esc(g.note) + '</p></div>' +
-            '<div class="masonry">' + g.imgs.map(function (id) {
-              return '<button type="button" class="tile" data-zoom><img src="' + img(id) + '" alt="Reference: ' + esc(g.name.toLowerCase()) + '" loading="lazy"></button>';
-            }).join("") + '</div></section>';
-        }).join("") +
-        '<div style="height:48px"></div>' +
+      '<div class="wrap mb">' +
+        '<section class="spread">' +
+          '<div class="spread-main">' +
+            '<header class="mb-head"><h1 class="mb-title">Mood board</h1><p>Brand direction, vol. 01</p></header>' +
+            '<div class="mb-grid">' + main + '</div>' +
+          '</div>' +
+          '<aside class="mb-side">' +
+            '<h2>Colour palette</h2><ul class="mb-pal">' + swatches + '</ul>' +
+            '<hr><h2>Keywords</h2><ul class="mb-words">' + S.keywords.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join("") + '</ul>' +
+            '<hr><h2>Key pieces</h2><p>' + esc(S.keyPieces) + '</p>' +
+          '</aside>' +
+        '</section>' +
+        '<section class="spread">' +
+          '<div class="spread-main">' +
+            '<header class="mb-head"><h2 class="mb-title sm">More references</h2></header>' +
+            '<div class="jgrid">' + more + '</div>' +
+          '</div>' +
+          '<aside class="mb-side">' +
+            '<h2>Details to steal</h2><ul class="mb-details">' + S.details.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul>' +
+            '<hr><p class="muted">' + count + ' references from the group chat. Tap any photo to see it big. Same board in <a class="textlink" href="' + esc(S.canvaBoard) + '" target="_blank" rel="noopener">Canva</a>.</p>' +
+          '</aside>' +
+        '</section>' +
       '</div>';
     wireZoom(app);
   }
