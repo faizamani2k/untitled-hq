@@ -366,7 +366,10 @@
         var tr = app.querySelector('[data-row="' + t.id + '"]');
         STATUSES.forEach(function (s) { tr.classList.remove(stClass(s)); }); tr.classList.add(stClass(v));
         if (v === "Done") openRec(t);
-        saveLive(t, { status: v }).then(function () { flash("Saved: step " + stepNo(t) + " is " + v.toLowerCase()); }, function () { flash("Couldn’t save. Check your connection and try again.", true); });
+        var patch = { status: v };
+        if (v !== "Done") { patch.decision = null; patch.agreed = null; patch.decided_on = null; patch.notes = null; }
+        var hadRec = !!(LIVE[t.id] && LIVE[t.id].decision);
+        saveLive(t, patch).then(function () { flash("Saved: step " + stepNo(t) + " is " + v.toLowerCase()); if (hadRec && v !== "Done") plan(filter); }, function () { flash("Couldn’t save. Check your connection and try again.", true); });
         document.getElementById("summary").innerHTML = summaryHtml();
         var ph = S.phases.filter(function (p) { return p.name === t.phase; })[0];
         var real = steps.filter(function (x) { return x.phase === ph.name && !x.isBreak; });
