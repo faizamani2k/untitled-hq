@@ -274,19 +274,29 @@
     });
   }
 
-  function pieces() {
+  function pieces(type) {
+    var types = [];
+    S.pieces.forEach(function (p) { if (types.indexOf(p.type) < 0) types.push(p.type); });
+    var list = S.pieces.filter(function (p) { return !type || p.type === type; });
     app.innerHTML =
       '<div class="wrap">' +
         '<h1 class="h1">Pieces</h1>' +
-        '<p class="lede">Candidates for Drop 1. Pick 3 or 4 by 24 Dec. Kenny’s designs go on each piece’s page.</p>' +
-        '<div class="grid">' + S.pieces.map(function (p, i) {
+        '<p class="lede">Every piece from the board, ' + S.pieces.length + ' in all. Each one has its own page for Kenny\u2019s designs. Pick 3 or 4 for Drop 1 by 24 Dec.</p>' +
+        '<div class="chips" role="group" aria-label="Show pieces">' + [["", "All"]].concat(types.map(function (t) { return [t, t]; })).map(function (c) {
+          return '<button type="button" class="chip" data-t="' + esc(c[0]) + '" aria-pressed="' + ((type || "") === c[0]) + '">' + esc(c[1]) + '</button>';
+        }).join("") + '</div>' +
+        '<div class="grid">' + list.map(function (p) {
+          var i = S.pieces.indexOf(p);
           return '<a class="card" href="#/pieces/' + p.id + '"><div class="shot"><img data-piece="' + p.id + '" src="' + img(p.refs[0]) + '" alt="" loading="lazy"></div>' +
             '<div class="row"><span class="name">' + esc(p.name) + '</span><span class="no">' + String(i + 1).padStart(3, "0") + '</span></div>' +
             '<span class="status">' + esc(p.status) + '</span> <span class="status ref" data-reflabel="' + p.id + '">Reference photo</span></a>';
         }).join("") + '</div>' +
         '<div style="height:64px"></div>' +
       '</div>';
-    if (ST) S.pieces.forEach(function (p) {
+    app.querySelectorAll(".chip").forEach(function (b) {
+      b.addEventListener("click", function () { location.hash = "#/pieces" + (b.dataset.t ? "/type/" + encodeURIComponent(b.dataset.t) : ""); });
+    });
+    if (ST) list.forEach(function (p) {
       listPhotos(p.id).then(function (urls) {
         if (!urls.length) return;
         var im = app.querySelector('img[data-piece="' + p.id + '"]'); if (im) im.src = urls[0];
@@ -300,8 +310,9 @@
     S.pieces.forEach(function (p, i) { if (p.id === id) idx = i; });
     if (idx < 0) { location.hash = "#/pieces"; return; }
     var p = S.pieces[idx];
-    var specRows = Object.keys(p.spec).map(function (k) {
-      var v = p.spec[k];
+    var spec = p.spec || {};
+    var specRows = ["Type"].concat(S.pieceSpec).map(function (k) {
+      var v = k === "Type" ? p.type : (spec[k] || "To decide");
       return '<tr><th scope="row">' + esc(k) + '</th><td' + (v === "To decide" ? ' class="tbd"' : '') + '>' + esc(v) + '</td></tr>';
     }).join("");
 
@@ -377,6 +388,7 @@
     if (key === "plan") plan(parts[1]);
     else if (key === "board") board();
     else if (key === "style") style();
+    else if (key === "pieces" && parts[1] === "type") pieces(decodeURIComponent(parts[2] || ""));
     else if (key === "pieces" && parts[1]) piece(parts[1]);
     else if (key === "pieces") pieces();
     else { key = "home"; home(); }

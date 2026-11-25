@@ -89,17 +89,35 @@ window.SITE = {
     "Boxy, cropped, oversized fits"
   ],
 
-  // Drop 1 candidates. Kenny's designs for each piece show on its page.
+  // Every piece from the board. Kenny's designs for each piece show on its page.
   pieces: [
-    { id: "p01", name: "Washed boxy tee", status: "Idea", refs: ["34", "16", "28"],
-      spec: { Fit: "Boxy, cropped", Fabric: "To decide", Weight: "To decide", Print: "Cracked type on the back", Wash: "Sun-faded, darker hem" } },
-    { id: "p02", name: "Heavy hoodie", status: "Idea", refs: ["32", "17", "06"],
-      spec: { Fit: "Oversized, short body", Fabric: "To decide", Weight: "To decide", Print: "One strong image on the front", Wash: "Washed black" } },
-    { id: "p03", name: "Thermal longsleeve", status: "Idea", refs: ["20", "30", "33"],
-      spec: { Fit: "Relaxed, long sleeves", Fabric: "Waffle thermal", Weight: "To decide", Print: "Tonal blackletter or sleeve script", Wash: "To decide" } },
-    { id: "p04", name: "Wide-leg denim", status: "Idea", refs: ["15", "27", "08"],
-      spec: { Fit: "Wide, stacked", Fabric: "Denim", Weight: "To decide", Print: "Bone patch or bleach print", Wash: "Faded" } },
-    { id: "p05", name: "Graphic sweatpants", status: "Idea", refs: ["26", "24"],
-      spec: { Fit: "Balloon leg, cuffed", Fabric: "Fleece", Weight: "To decide", Print: "Gothic lettering down one leg", Wash: "Washed charcoal" } }
-  ]
+    { id: "p01", name: "Washed boxy tee", type: "Tees", status: "Idea", refs: ["34"] },
+    { id: "p02", name: "Cracked type tee", type: "Tees", status: "Idea", refs: ["16"] },
+    { id: "p03", name: "Faded script-oval tee", type: "Tees", status: "Idea", refs: ["18"] },
+    { id: "p04", name: "Cream ringer tee", type: "Tees", status: "Idea", refs: ["10"] },
+    { id: "p05", name: "Racing jersey tee", type: "Tees", status: "Idea", refs: ["13"] },
+    { id: "p06", name: "Brushstroke tank", type: "Tanks", status: "Idea", refs: ["28"] },
+    { id: "p07", name: "Gothic rib tank", type: "Tanks", status: "Idea", refs: ["31"] },
+    { id: "p08", name: "Gothic thermal longsleeve", type: "Longsleeves", status: "Idea", refs: ["20"] },
+    { id: "p09", name: "Chest script longsleeve", type: "Longsleeves", status: "Idea", refs: ["30"] },
+    { id: "p10", name: "Sleeve script longsleeve", type: "Longsleeves", status: "Idea", refs: ["33"] },
+    { id: "p11", name: "Number grid longsleeve", type: "Longsleeves", status: "Idea", refs: ["21"] },
+    { id: "p12", name: "Faded print longsleeve", type: "Longsleeves", status: "Idea", refs: ["23"] },
+    { id: "p13", name: "Red print racing longsleeve", type: "Longsleeves", status: "Idea", refs: ["05"] },
+    { id: "p14", name: "Mohair script sweater", type: "Knits", status: "Idea", refs: ["22"] },
+    { id: "p15", name: "Face print hoodie", type: "Hoodies", status: "Idea", refs: ["32"] },
+    { id: "p16", name: "Cracked logo hoodie", type: "Hoodies", status: "Idea", refs: ["17"] },
+    { id: "p17", name: "Grey zip hoodie", type: "Hoodies", status: "Idea", refs: ["06"] },
+    { id: "p18", name: "Studded hood jacket", type: "Outerwear", status: "Idea", refs: ["02"] },
+    { id: "p19", name: "Leather hood jacket", type: "Outerwear", status: "Idea", refs: ["03"] },
+    { id: "p20", name: "Fishbone bleach jeans", type: "Bottoms", status: "Idea", refs: ["15"] },
+    { id: "p21", name: "Paisley panel jeans", type: "Bottoms", status: "Idea", refs: ["08"] },
+    { id: "p22", name: "Olive asymmetric-fly pants", type: "Bottoms", status: "Idea", refs: ["14"] },
+    { id: "p23", name: "Gothic sweatpants", type: "Bottoms", status: "Idea", refs: ["26"] },
+    { id: "p24", name: "Bone patch jorts", type: "Bottoms", status: "Idea", refs: ["27"] },
+    { id: "p25", name: "Script sweat shorts", type: "Bottoms", status: "Idea", refs: ["24"] },
+    { id: "p26", name: "Engraved lighter", type: "Objects", status: "Idea", refs: ["07"] }
+  ],
+
+  pieceSpec: ["Fit", "Fabric", "Weight", "Print", "Wash"]
 };
