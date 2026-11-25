@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A1A1A">
+<title>Untitled. Drop 01</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- Cracked screen-print: speckle wear plus long crack lines knocked out of the letters -->
+    <filter id="crack" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="4" seed="3" result="patch"/>
+      <feColorMatrix in="patch" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -18 12.5" result="patchMask"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="5" result="pin"/>
+      <feColorMatrix in="pin" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -20 14.9" result="pinMask"/>
+      <feTurbulence type="turbulence" baseFrequency="0.006 0.02" numOctaves="3" seed="11" result="vein"/>
+      <feColorMatrix in="vein" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 26 -0.7" result="veinMask"/>
+      <feComposite in="patchMask" in2="pinMask" operator="in" result="m1"/>
+      <feComposite in="m1" in2="veinMask" operator="in" result="wear"/>
+      <feComposite in="SourceGraphic" in2="wear" operator="in"/>
+    </filter>
+  </defs>
+</svg>
+
+<a class="skip" href="#app">Skip to content</a>
+
+<header class="top">
+  <a class="mark" href="#/" aria-label="Home">Untitled</a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#/" data-route="home">Home</a>
+    <a href="#/plan" data-route="plan">Plan</a>
+    <a href="#/board" data-route="board">Board</a>
+    <a href="#/style" data-route="style">Style</a>
+    <a href="#/pieces" data-route="pieces">Pieces</a>
+  </nav>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="foot">
+  <p>Private working site for Amani, Jeet and Kenny. Nothing here is for sale.</p>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Image viewer">
+  <img alt="">
+  <div class="lb-bar">
+    <button type="button" data-lb="prev">Previous</button>
+    <span class="lb-count"></span>
+    <button type="button" data-lb="next">Next</button>
+    <button type="button" data-lb="close">Close</button>
+  </div>
+</dialog>
+
+<script src="js/data.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
